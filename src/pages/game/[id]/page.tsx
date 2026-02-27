@@ -1,12 +1,25 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Navigate } from 'react-router';
 import { useSocketStore } from '@/stores/socket-store';
 import { Card } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 export default function GameRoom() {
   const { id } = useParams();
-  const { initializeSocket, joinGame, leaveGame, isConnected } = useSocketStore();
+  const { initializeSocket, joinGame, leaveGame, isConnected, socket } = useSocketStore();
+
+  const [lastNumber, setLastNumber] = useState<number | null>(null);
+
+  const speak = (text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel(); // Prevent queue buildup
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9; // Slightly slower for clarity
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   useEffect(() => {
     initializeSocket();
