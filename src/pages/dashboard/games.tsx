@@ -1,9 +1,11 @@
 ﻿import { useState, useEffect } from 'react';
-import { Ticket, Trophy, Clock, Search, Filter, AlertCircle } from 'lucide-react';
+import { Ticket, Trophy, Clock, Search, Filter, AlertCircle, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { Link } from 'react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -229,6 +231,7 @@ export function UserGames() {
                 <TableHead>Purchased</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Prize Won</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -266,7 +269,19 @@ export function UserGames() {
                       <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
-
+                  <TableCell>
+                    {(ticket.status === 'active' || ticket.status === 'confirmed') && (
+                      <Link
+                        to={`/game/${typeof ticket.gameId === 'object' ? (ticket.gameId as any)._id : ticket.gameId}`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Button size="sm" variant="outline" className="gap-1.5 text-green-600 border-green-300 hover:bg-green-50">
+                          Join Game
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </Button>
+                      </Link>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -47,28 +47,13 @@ export function AuthInitializer({ children }: { children: React.ReactNode }) {
           // Ensure token is ready before calling API
           const token = await getToken();
           if (token) {
-            // Check intent based on current URL or existing metadata
-            const isAdminRoute = location.pathname.startsWith('/admin');
-            const currentRole = user.publicMetadata?.role as string | undefined;
-
-            // Sync as Admin if:
-            // 1. We are on an admin route (e.g. /admin/sign-in, /admin/dashboard)
-            // 2. OR user is already an admin (checked via metadata)
-            if (isAdminRoute || currentRole === 'admin') {
-              console.log("👮‍♂️ Syncing as ADMIN based on route/metadata");
-              await authService.syncAdmin({
-                clerkId: user.id,
-                email: user.primaryEmailAddress?.emailAddress || '',
-                name: user.fullName || user.firstName || 'Admin',
-              });
-            } else {
-              console.log("👤 Syncing as USER");
-              await authService.syncUser({
-                clerkId: user.id,
-                email: user.primaryEmailAddress?.emailAddress || '',
-                name: user.fullName || user.firstName || 'User',
-              });
-            }
+            // Sync as regular user
+            console.log("👤 Syncing user with backend");
+            await authService.syncUser({
+              clerkId: user.id,
+              email: user.primaryEmailAddress?.emailAddress || '',
+              name: user.fullName || user.firstName || 'User',
+            });
 
             console.log("✅ Identity synced successfully");
             hasSynced.current = true;

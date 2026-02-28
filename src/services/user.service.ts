@@ -28,40 +28,6 @@ export const userService = {
     const response = await api.get('/users/winnings');
     return response.data;
   },
-
-  // Admin: Get all users
-  async getAllUsers(params?: {
-    search?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<PaginatedResponse<User>> {
-    const response = await api.get('/admin/users', { params });
-    return response.data;
-  },
-
-  // Admin: Get user by ID
-  async getUser(id: string): Promise<ApiResponse<User>> {
-    const response = await api.get(`/admin/users/${id}`);
-    return response.data;
-  },
-
-  // Admin: Update user
-  async updateUser(id: string, data: Partial<User>): Promise<ApiResponse<User>> {
-    const response = await api.put(`/admin/users/${id}`, data);
-    return response.data;
-  },
-
-  // Admin: Ban/unban user
-  async toggleUserBan(id: string, banned: boolean): Promise<ApiResponse<User>> {
-    const response = await api.post(`/admin/users/${id}/ban`, { banned });
-    return response.data;
-  },
-
-  // Admin: Delete user
-  async deleteUser(id: string): Promise<ApiResponse<null>> {
-    const response = await api.delete(`/admin/users/${id}`);
-    return response.data;
-  },
 };
 
 export default userService;

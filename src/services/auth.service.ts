@@ -49,37 +49,6 @@ export const authService = {
       throw error;
     }
   },
-
-  /**
-   * Sync admin data with backend after sign-in
-   * Creates admin in database if not exists
-   */
-  async syncAdmin(adminData: {
-    clerkId: string;
-    email: string;
-    name: string;
-  }): Promise<AuthResponse> {
-    try {
-      const response = await api.post<AuthResponse>('/auth/sync-admin', adminData);
-      return response.data;
-    } catch (error) {
-      console.error('Failed to sync admin:', error);
-      throw error;
-    }
-  },
-
-  /**
-   * Verify current user's role
-   */
-  async verifyRole(): Promise<{ role: Roles | null }> {
-    try {
-      const response = await api.get<{ role: Roles | null }>('/auth/verify-role');
-      return response.data;
-    } catch (error) {
-      console.error('Failed to verify role:', error);
-      return { role: null };
-    }
-  },
 };
 
 export default authService;
