@@ -80,7 +80,7 @@ export interface GameWinner {
 }
 
 // Ticket Types
-export type TicketStatus = 'pending' | 'confirmed' | 'cancelled' | 'active' | 'won' | 'lost';
+export type TicketStatus = 'available' | 'pending' | 'confirmed' | 'cancelled' | 'active' | 'won' | 'lost';
 
 export interface TicketWinnerInfo {
   position: number; // 1st, 2nd, 3rd
@@ -190,7 +190,7 @@ export interface CreateGameForm {
 
 export interface PurchaseTicketForm {
   gameId: string;
-  quantity: number;
+  ticketNumbers: number[]; // User-selected ticket numbers
 }
 
 // Navigation Types

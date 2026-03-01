@@ -35,6 +35,10 @@ import { TambolaTicket } from '@/components/tambola-ticket';
 
 function TicketStatusBadge({ status }: { status: TicketStatus }) {
   const config: Record<TicketStatus, { label: string; className: string }> = {
+    available: {
+      label: 'Available',
+      className: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300',
+    },
     pending: {
       label: 'Pending',
       className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',

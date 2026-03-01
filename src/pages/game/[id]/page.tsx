@@ -14,22 +14,53 @@ import {
   Loader2,
   Volume2,
   VolumeX,
+  Music,
   Trophy,
   Hash,
   Users,
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
+import { startMusic, stopMusic, duckForAnnouncement, isMusicPlaying } from '@/lib/tambola-bg-music';
 
-// Voice announcement helper
+// Voice announcement — prefers female Indian English
+let cachedVoice: SpeechSynthesisVoice | null = null;
+
+function getIndianFemaleVoice(): SpeechSynthesisVoice | null {
+  if (cachedVoice) return cachedVoice;
+  if (!('speechSynthesis' in window)) return null;
+
+  const voices = window.speechSynthesis.getVoices();
+  // Priority 1: en-IN female
+  cachedVoice = voices.find(v => v.lang.startsWith('en-IN') && /female|woman|zira|aditi|raveena/i.test(v.name)) || null;
+  // Priority 2: any en-IN voice
+  if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en-IN')) || null;
+  // Priority 3: any female English voice
+  if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en') && /female|woman|zira/i.test(v.name)) || null;
+  // Priority 4: any English voice
+  if (!cachedVoice) cachedVoice = voices.find(v => v.lang.startsWith('en')) || null;
+  return cachedVoice;
+}
+
+// Ensure voices are loaded
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => { cachedVoice = null; };
+}
+
 function speak(text: string) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    window.speechSynthesis.speak(utterance);
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voice = getIndianFemaleVoice();
+  if (voice) utterance.voice = voice;
+  utterance.lang = 'en-IN';
+  utterance.rate = 0.9;
+  utterance.pitch = 1.05;
+  // Duck music during speech
+  if (isMusicPlaying()) {
+    duckForAnnouncement(Math.max(2000, text.length * 120));
   }
+  window.speechSynthesis.speak(utterance);
 }
 
 // Status badge colors
@@ -56,6 +87,9 @@ export default function GameRoom() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const voiceEnabledRef = useRef(voiceEnabled);
   voiceEnabledRef.current = voiceEnabled;
+
+  // Background music
+  const [musicEnabled, setMusicEnabled] = useState(false);
 
   // ──────────── Data Fetching ────────────
   useEffect(() => {
@@ -105,6 +139,16 @@ export default function GameRoom() {
       };
     }
   }, [isConnected, id, joinGame, leaveGame]);
+
+  // ──────────── Background Music ────────────
+  useEffect(() => {
+    if (musicEnabled && game?.status === 'active') {
+      startMusic();
+    } else {
+      stopMusic();
+    }
+    return () => { stopMusic(); };
+  }, [musicEnabled, game?.status]);
 
   // ──────────── Socket Event Listeners ────────────
   useEffect(() => {
@@ -261,7 +305,17 @@ export default function GameRoom() {
             className="gap-2"
           >
             {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-            {voiceEnabled ? 'Voice On' : 'Voice Off'}
+            {voiceEnabled ? 'Voice' : 'Muted'}
+          </Button>
+          {/* Music toggle */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setMusicEnabled(!musicEnabled)}
+            className={`gap-2 ${musicEnabled ? 'border-violet-400 text-violet-600' : ''}`}
+          >
+            <Music className="h-4 w-4" />
+            {musicEnabled ? 'Music On' : 'Music Off'}
           </Button>
         </div>
       </div>

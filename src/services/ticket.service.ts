@@ -29,6 +29,12 @@ export const ticketService = {
     const response = await api.post(`/tickets/${ticketId}/mark`, { number });
     return response.data;
   },
+
+  // Get available tickets for a game (for ticket picker)
+  async getAvailableTickets(gameId: string): Promise<ApiResponse<{ available: number[]; booked: number[]; total: number }>> {
+    const response = await api.get(`/tickets/available/${gameId}`);
+    return response.data;
+  },
 };
 
 export default ticketService;
