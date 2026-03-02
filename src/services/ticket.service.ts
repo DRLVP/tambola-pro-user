@@ -35,6 +35,12 @@ export const ticketService = {
     const response = await api.get(`/tickets/available/${gameId}`);
     return response.data;
   },
+
+  // Get all booked tickets for a game (public transparency)
+  async getPublicGameTickets(gameId: string): Promise<ApiResponse<Ticket[]>> {
+    const response = await api.get(`/tickets/public/${gameId}`);
+    return response.data;
+  },
 };
 
 export default ticketService;

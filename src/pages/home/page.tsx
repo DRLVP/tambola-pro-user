@@ -1,4 +1,5 @@
-﻿import { Link } from 'react-router';
+﻿import { useState, useEffect } from 'react';
+import { Link } from 'react-router';
 import {
   Trophy,
   Users,
@@ -10,11 +11,14 @@ import {
   Play,
   Gift,
   Clock,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useUser } from '@clerk/clerk-react';
+import { gameService } from '@/services/game.service';
+import { GameCard } from '@/components/game-card';
+import type { Game } from '@/types';
 
 const features = [
   {
@@ -83,11 +87,21 @@ const testimonials = [
 ];
 
 export function HomePage() {
+  const [games, setGames] = useState<Game[]>([]);
+  const [gamesLoading, setGamesLoading] = useState(true);
 
-  const { user } = useUser();
-
-  console.log("active users", user);
-
+  useEffect(() => {
+    async function fetchGames() {
+      try {
+        const res = await gameService.getAvailableGames();
+        if (res.success && res.data) {
+          setGames(Array.isArray(res.data) ? res.data : []);
+        }
+      } catch { /* ignore */ }
+      finally { setGamesLoading(false); }
+    }
+    fetchGames();
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -167,6 +181,48 @@ export function HomePage() {
           <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" className="fill-background" />
           </svg>
+        </div>
+      </section>
+
+      {/* Available Games Section */}
+      <section className="py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <Badge variant="secondary" className="mb-4">🎮 Live Games</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Available Games</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Join an ongoing game or buy tickets for an upcoming one
+            </p>
+          </div>
+
+          {gamesLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
+            </div>
+          ) : games.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <Gamepad2 className="h-12 w-12 mx-auto mb-3 opacity-40" />
+              <p className="font-medium">No games available right now</p>
+              <p className="text-sm mt-1">Check back soon or join the lobby!</p>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {games.slice(0, 6).map((game) => (
+                <GameCard key={game._id} game={game} />
+              ))}
+            </div>
+          )}
+
+          {games.length > 6 && (
+            <div className="text-center mt-8">
+              <Link to="/lobby">
+                <Button variant="outline" size="lg" className="gap-2">
+                  View All Games
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

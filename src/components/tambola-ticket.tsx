@@ -1,12 +1,15 @@
 ﻿import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import type { Ticket } from '@/types';
 
 interface TambolaTicketProps {
   ticket: Ticket;
   className?: string;
+  /** Show "Booked by username" badge + status flag (for public game view) */
+  showOwner?: boolean;
 }
 
-export function TambolaTicket({ ticket, className }: TambolaTicketProps) {
+export function TambolaTicket({ ticket, className, showOwner = false }: TambolaTicketProps) {
   const { numbers, markedNumbers } = ticket;
 
   // Guard: ensure numbers is a valid 3×9 matrix
@@ -18,18 +21,69 @@ export function TambolaTicket({ ticket, className }: TambolaTicketProps) {
     );
   }
 
+  // Status config for the badge
+  const statusConfig: Record<string, { label: string; color: string }> = {
+    available: { label: 'Available', color: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300' },
+    pending: { label: 'Temporary', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' },
+    confirmed: { label: 'Confirmed', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' },
+    active: { label: 'Confirmed', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' },
+    won: { label: 'Winner 🏆', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 font-bold' },
+    lost: { label: 'No Win', color: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' },
+    cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' },
+  };
+
+  const statusCfg = statusConfig[ticket.status] || { label: ticket.status, color: '' };
+  const isBooked = ticket.userName && ticket.status !== 'available';
+
   return (
     <div
       className={cn(
-        'rounded-2xl border-2 border-violet-300 dark:border-violet-700 shadow-lg shadow-violet-500/10',
+        'rounded-2xl border-2 shadow-lg',
+        ticket.status === 'won'
+          ? 'border-emerald-400 dark:border-emerald-600 shadow-emerald-500/20'
+          : 'border-violet-300 dark:border-violet-700 shadow-violet-500/10',
         'bg-gradient-to-br from-white to-violet-50 dark:from-zinc-900 dark:to-violet-950',
         'p-3 sm:p-4 w-full',
         className
       )}
     >
-      {/* Ticket header strip */}
-      <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-lg px-3 py-1.5 mb-3 text-center">
-        <span className="text-white text-xs font-bold tracking-widest uppercase">Tambola Ticket</span>
+      {/* Ticket header strip — with ticket number + owner badge */}
+      <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-lg px-3 py-2 mb-3">
+        <div className="flex items-center justify-between">
+          <span className="text-white text-xs font-bold tracking-widest uppercase">
+            {ticket.ticketNumber != null ? `Ticket #${ticket.ticketNumber}` : 'Tambola Ticket'}
+          </span>
+          {showOwner && (
+            <Badge className={cn('text-[10px] px-2 py-0.5', statusCfg.color)}>
+              {statusCfg.label}
+            </Badge>
+          )}
+        </div>
+
+        {/* Booked by username */}
+        {showOwner && isBooked && (
+          <div className="mt-1 flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded-full bg-white/30 flex items-center justify-center text-[8px] font-bold text-white">
+              {ticket.userName!.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-white/90 text-[11px] font-medium">
+              Booked by <strong>{ticket.userName}</strong>
+            </span>
+            {ticket.status === 'pending' && (
+              <span className="text-amber-200 text-[9px] italic ml-auto">(Temporary)</span>
+            )}
+            {(ticket.status === 'confirmed' || ticket.status === 'active') && (
+              <span className="text-green-200 text-[9px] font-semibold ml-auto">✓ Confirmed</span>
+            )}
+          </div>
+        )}
+
+        {/* Available ticket — no user */}
+        {showOwner && !isBooked && ticket.status === 'available' && (
+          <div className="mt-1">
+            <span className="text-white/60 text-[11px] italic">Not yet booked</span>
+          </div>
+        )}
       </div>
 
       {/* Grid: 9 columns, 3 rows */}

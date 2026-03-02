@@ -78,6 +78,8 @@ export default function GameRoom() {
   // Game state
   const [game, setGame] = useState<Game | null>(null);
   const [myTickets, setMyTickets] = useState<Ticket[]>([]);
+  const [allGameTickets, setAllGameTickets] = useState<Ticket[]>([]);
+  const [showAllTickets, setShowAllTickets] = useState(false);
   const [calledNumbers, setCalledNumbers] = useState<number[]>([]);
   const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -115,6 +117,11 @@ export default function GameRoom() {
 
         const tickets = Array.isArray(ticketsRes.data) ? ticketsRes.data : [];
         setMyTickets(tickets);
+
+        // Fetch all public game tickets for transparency
+        ticketService.getPublicGameTickets(id!).then(res => {
+          if (res.success && res.data) setAllGameTickets(res.data);
+        }).catch(() => { });
       } catch (err) {
         console.error('Failed to load game data:', err);
         setError('Failed to load game data');
@@ -455,6 +462,49 @@ export default function GameRoom() {
             </span>
           </div>
         </div>
+      )}
+
+      {/* ── All Game Tickets — Transparency Section ── */}
+      {allGameTickets.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Users className="h-5 w-5 text-violet-500" />
+                All Game Tickets ({allGameTickets.length})
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAllTickets(!showAllTickets)}
+                className="gap-1.5"
+              >
+                {showAllTickets ? 'Hide' : 'Show All'}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              All booked tickets for this game — see who holds which ticket
+            </p>
+          </CardHeader>
+          {showAllTickets && (
+            <CardContent>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {allGameTickets.map((ticket) => (
+                  <TambolaTicket
+                    key={ticket._id}
+                    ticket={{
+                      ...ticket,
+                      markedNumbers: calledNumbers.filter(n =>
+                        ticket.numbers.flat().includes(n)
+                      ),
+                    }}
+                    showOwner
+                  />
+                ))}
+              </div>
+            </CardContent>
+          )}
+        </Card>
       )}
 
       {/* ── Completed State ── */}
