@@ -18,9 +18,9 @@ export function NumberBoard({ calledNumbers, lastCalledNumber, className }: Numb
 
   return (
     <div className={cn('', className)}>
-      <div className="grid gap-1.5">
+      <div className="grid gap-1 sm:gap-1.5">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex gap-1.5">
+          <div key={rowIndex} className="flex gap-1 sm:gap-1.5">
             {row.map((number) => {
               const isCalled = calledNumbers.includes(number);
               const isLast = number === lastCalledNumber;
@@ -29,10 +29,10 @@ export function NumberBoard({ calledNumbers, lastCalledNumber, className }: Numb
                 <div
                   key={number}
                   className={cn(
-                    'h-9 w-9 md:h-10 md:w-10 rounded-lg font-semibold text-sm md:text-base flex items-center justify-center transition-all duration-300',
+                    'h-7 w-7 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-md sm:rounded-lg font-semibold text-[11px] sm:text-sm md:text-base flex items-center justify-center transition-all duration-300',
                     isCalled
                       ? isLast
-                        ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/50 scale-110 ring-2 ring-amber-300'
+                        ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/50 scale-110 ring-2 ring-amber-300 animate-number-pop'
                         : 'bg-gradient-to-br from-violet-500 to-indigo-500 text-white shadow-md shadow-violet-500/25'
                       : 'bg-muted text-muted-foreground'
                   )}

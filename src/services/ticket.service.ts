@@ -31,7 +31,7 @@ export const ticketService = {
   },
 
   // Get available tickets for a game (for ticket picker)
-  async getAvailableTickets(gameId: string): Promise<ApiResponse<{ available: number[]; booked: number[]; total: number }>> {
+  async getAvailableTickets(gameId: string): Promise<ApiResponse<{ available: { ticketNumber: number; numbers: number[][] }[]; booked: number[]; total: number }>> {
     const response = await api.get(`/tickets/available/${gameId}`);
     return response.data;
   },

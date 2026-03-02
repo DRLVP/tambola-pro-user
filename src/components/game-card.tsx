@@ -49,7 +49,7 @@ export function GameCard({ game, className }: GameCardProps) {
   };
 
   return (
-    <Card className={cn('group hover:shadow-xl hover:shadow-violet-500/10 transition-all duration-300 hover:-translate-y-1 border-2 hover:border-violet-500/20 overflow-hidden', className)}>
+    <Card className={cn('group hover:shadow-xl hover:shadow-violet-500/10 transition-all duration-300 hover:-translate-y-1 border-2 hover:border-violet-500/20 overflow-hidden cursor-pointer active:scale-[0.98]', className)}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <div>

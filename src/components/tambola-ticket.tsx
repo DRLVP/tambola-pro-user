@@ -33,7 +33,7 @@ export function TambolaTicket({ ticket, className }: TambolaTicketProps) {
       </div>
 
       {/* Grid: 9 columns, 3 rows */}
-      <div className="grid grid-cols-9 gap-1">
+      <div className="grid grid-cols-9 gap-0.5 sm:gap-1">
         {numbers.map((row, rowIndex) =>
           row.map((num, colIndex) => {
             const isEmpty = num === 0;
@@ -45,12 +45,12 @@ export function TambolaTicket({ ticket, className }: TambolaTicketProps) {
                 className={cn(
                   // Base: square cells
                   'aspect-square flex items-center justify-center rounded-md',
-                  'text-xs sm:text-sm font-bold select-none transition-all duration-150',
+                  'text-[11px] sm:text-xs md:text-sm font-bold select-none transition-all duration-200',
                   isEmpty
                     ? 'bg-muted/30 dark:bg-zinc-800/40'
                     : isMarked
                       ? // Daubed / marked number
-                      'bg-violet-500 text-white shadow-md shadow-violet-400/40 ring-2 ring-violet-300 dark:ring-violet-600 scale-105'
+                      'bg-violet-500 text-white shadow-md shadow-violet-400/40 ring-2 ring-violet-300 dark:ring-violet-600 scale-105 animate-bounce-in'
                       : // Normal number cell
                       'bg-white dark:bg-zinc-800 text-foreground border border-violet-200 dark:border-violet-800 shadow-sm'
                 )}

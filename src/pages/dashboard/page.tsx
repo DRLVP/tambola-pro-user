@@ -83,13 +83,13 @@ export function UserDashboard() {
       // Fetch tickets: latest 3 for "Recent Tickets" section
       const recentResponse = await ticketService.getMyTickets({ page: 1, limit: 3 });
       if (recentResponse.success && recentResponse.data) {
-        setRecentTickets(recentResponse.data);
+        setRecentTickets(recentResponse.data.filter((t) => t != null && t._id != null));
       }
 
       // Fetch all tickets to calculate per-status counts
       const allTicketsResponse = await ticketService.getMyTickets({ page: 1, limit: 100 });
       if (allTicketsResponse.success && allTicketsResponse.data) {
-        const all = allTicketsResponse.data;
+        const all = allTicketsResponse.data.filter((t) => t != null && t._id != null);
         setConfirmedCount(all.filter(t => t.status === 'active').length);
         setPendingCount(all.filter(t => t.status === 'pending').length);
       }

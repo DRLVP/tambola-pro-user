@@ -72,7 +72,7 @@ function TicketStatusBadge({ status }: { status: TicketStatus }) {
 // Safely extract game name: handles populated gameId object OR plain gameName string
 function getGameName(ticket: any): string {
   if (ticket.gameName) return ticket.gameName;
-  if (ticket.gameId && typeof ticket.gameId === 'object' && ticket.gameId.name) {
+  if (ticket.gameId && typeof ticket.gameId === 'object' && ticket.gameId !== null && ticket.gameId.name) {
     return ticket.gameId.name;
   }
   return 'Tambola Game';
@@ -106,7 +106,9 @@ export function UserGames() {
       setLoading(true);
       const response = await ticketService.getMyTickets({ page: 1, limit: 100 });
       if (response.success && response.data) {
-        setTickets(response.data);
+        // Filter out any tickets that are null or have a null/missing _id
+        // (can happen when a populated gameId references a deleted game doc)
+        setTickets(response.data.filter((t) => t != null && t._id != null));
       }
     } catch (err) {
       toast.error('Failed to load tickets');
@@ -227,69 +229,114 @@ export function UserGames() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Ticket #</TableHead>
-                <TableHead>Game Name</TableHead>
-                <TableHead>Purchased</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Prize Won</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredTickets.map((ticket) => (
-                <TableRow
-                  key={ticket._id}
-                  className="cursor-pointer hover:bg-violet-50/60 dark:hover:bg-violet-950/20 transition-colors"
-                  onClick={() => handleViewTicket(ticket)}
-                >
-                  <TableCell>
-                    <span className="font-semibold text-violet-700 dark:text-violet-400">
-                      {ticket.ticketNumber != null
-                        ? `Ticket #${ticket.ticketNumber}`
-                        : 'N/A'}
+          {/* ── Mobile Card View (shown on small screens) ── */}
+          <div className="block md:hidden space-y-3">
+            {filteredTickets.map((ticket) => (
+              <div
+                key={ticket._id}
+                className="p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors active:scale-[0.98] cursor-pointer animate-fade-in-up"
+                onClick={() => handleViewTicket(ticket)}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-violet-700 dark:text-violet-400 text-sm">
+                    {ticket.ticketNumber != null ? `Ticket #${ticket.ticketNumber}` : 'N/A'}
+                  </span>
+                  <TicketStatusBadge status={ticket.status} />
+                </div>
+                <p className="font-medium text-sm truncate">{getGameName(ticket)}</p>
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {formatDate(ticket)}
+                  </div>
+                  {ticket.winnerInfo?.prizeAmount ? (
+                    <span className="font-semibold text-emerald-600 text-sm">
+                      +{ticket.winnerInfo.prizeAmount.toLocaleString()} XP
                     </span>
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {getGameName(ticket)}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
-                      <Clock className="h-3.5 w-3.5" />
-                      {formatDate(ticket)}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <TicketStatusBadge status={ticket.status} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {ticket.winnerInfo?.prizeAmount ? (
-                      <span className="font-semibold text-emerald-600">
-                        +{ticket.winnerInfo.prizeAmount.toLocaleString()} XP
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {(ticket.status === 'active' || ticket.status === 'confirmed') && (
-                      <Link
-                        to={`/game/${typeof ticket.gameId === 'object' ? (ticket.gameId as any)._id : ticket.gameId}`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Button size="sm" variant="outline" className="gap-1.5 text-green-600 border-green-300 hover:bg-green-50">
-                          Join Game
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </Button>
-                      </Link>
-                    )}
-                  </TableCell>
+                  ) : null}
+                </div>
+                {(ticket.status === 'active' || ticket.status === 'confirmed') && ticket.gameId != null && (
+                  <Link
+                    to={`/game/${typeof ticket.gameId === 'object' && ticket.gameId !== null ? (ticket.gameId as any)._id : ticket.gameId}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="mt-3 block"
+                  >
+                    <Button size="sm" variant="outline" className="w-full gap-1.5 text-green-600 border-green-300 hover:bg-green-50">
+                      Join Game
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* ── Desktop Table View (hidden on small screens) ── */}
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Ticket #</TableHead>
+                  <TableHead>Game Name</TableHead>
+                  <TableHead>Purchased</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Prize Won</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredTickets.map((ticket) => (
+                  <TableRow
+                    key={ticket._id}
+                    className="cursor-pointer hover:bg-violet-50/60 dark:hover:bg-violet-950/20 transition-colors"
+                    onClick={() => handleViewTicket(ticket)}
+                  >
+                    <TableCell>
+                      <span className="font-semibold text-violet-700 dark:text-violet-400">
+                        {ticket.ticketNumber != null
+                          ? `Ticket #${ticket.ticketNumber}`
+                          : 'N/A'}
+                      </span>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {getGameName(ticket)}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                        <Clock className="h-3.5 w-3.5" />
+                        {formatDate(ticket)}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <TicketStatusBadge status={ticket.status} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {ticket.winnerInfo?.prizeAmount ? (
+                        <span className="font-semibold text-emerald-600">
+                          +{ticket.winnerInfo.prizeAmount.toLocaleString()} XP
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {(ticket.status === 'active' || ticket.status === 'confirmed') && ticket.gameId != null && (
+                        <Link
+                          to={`/game/${typeof ticket.gameId === 'object' && ticket.gameId !== null ? (ticket.gameId as any)._id : ticket.gameId}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Button size="sm" variant="outline" className="gap-1.5 text-green-600 border-green-300 hover:bg-green-50">
+                            Join Game
+                            <ArrowRight className="h-3.5 w-3.5" />
+                          </Button>
+                        </Link>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
           {filteredTickets.length === 0 && (
             <div className="text-center py-12">

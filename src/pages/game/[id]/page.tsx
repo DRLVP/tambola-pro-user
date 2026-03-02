@@ -274,58 +274,59 @@ export default function GameRoom() {
   const sortedRules = [...(game.rules || [])].sort((a, b) => a.order - b.order);
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">{game.name}</h1>
-            <Badge className={statusColors[game.status] || ''}>
-              {game.status === 'active' && (
-                <span className="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse" />
-              )}
-              {game.status.charAt(0).toUpperCase() + game.status.slice(1)}
-            </Badge>
+    <div className="container mx-auto px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold">{game.name}</h1>
+              <Badge className={statusColors[game.status] || ''}>
+                {game.status === 'active' && (
+                  <span className="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse" />
+                )}
+                {game.status.charAt(0).toUpperCase() + game.status.slice(1)}
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {calledNumbers.length}/90 numbers called
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            {calledNumbers.length}/90 numbers called
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {/* Socket status */}
-          <div className={`flex items-center gap-2 text-sm ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
-            <div className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-            {isConnected ? 'Live' : 'Disconnected'}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Socket status */}
+            <div className={`flex items-center gap-2 text-sm ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
+              <div className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+              {isConnected ? 'Live' : 'Disconnected'}
+            </div>
+            {/* Voice toggle */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setVoiceEnabled(!voiceEnabled)}
+              className="gap-1.5 text-xs sm:text-sm"
+            >
+              {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              <span className="hidden sm:inline">{voiceEnabled ? 'Voice' : 'Muted'}</span>
+            </Button>
+            {/* Music toggle */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setMusicEnabled(!musicEnabled)}
+              className={`gap-1.5 text-xs sm:text-sm ${musicEnabled ? 'border-violet-400 text-violet-600' : ''}`}
+            >
+              <Music className="h-4 w-4" />
+              <span className="hidden sm:inline">{musicEnabled ? 'Music On' : 'Music Off'}</span>
+            </Button>
           </div>
-          {/* Voice toggle */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setVoiceEnabled(!voiceEnabled)}
-            className="gap-2"
-          >
-            {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-            {voiceEnabled ? 'Voice' : 'Muted'}
-          </Button>
-          {/* Music toggle */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setMusicEnabled(!musicEnabled)}
-            className={`gap-2 ${musicEnabled ? 'border-violet-400 text-violet-600' : ''}`}
-          >
-            <Music className="h-4 w-4" />
-            {musicEnabled ? 'Music On' : 'Music Off'}
-          </Button>
         </div>
       </div>
 
       {/* ── Last Called Number (prominent) ── */}
       {game.status === 'active' && (
         <div className="flex items-center justify-center">
-          <div className="flex flex-col items-center gap-2 p-6 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 border-2 border-violet-200 dark:border-violet-700">
-            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Last Called</span>
-            <span className="text-6xl font-black text-violet-700 dark:text-violet-300 tabular-nums">
+          <div className="flex flex-col items-center gap-2 p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 border-2 border-violet-200 dark:border-violet-700 animate-pulse-glow">
+            <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-wider">Last Called</span>
+            <span key={lastNumber} className="text-5xl sm:text-6xl md:text-7xl font-black text-violet-700 dark:text-violet-300 tabular-nums animate-number-pop">
               {lastNumber || '--'}
             </span>
             {game.settings?.autoPlay && (
@@ -339,7 +340,7 @@ export default function GameRoom() {
       )}
 
       {/* ── Main Grid ── */}
-      <div className="grid gap-6 lg:grid-cols-12">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-12">
         {/* Number Board (8 cols) */}
         <div className="lg:col-span-8 space-y-6">
           <Card>
@@ -364,7 +365,7 @@ export default function GameRoom() {
                 <CardTitle className="text-lg">My Tickets ({myTickets.length})</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4">
                   {myTickets.map((ticket) => (
                     <TambolaTicket key={ticket._id} ticket={ticket} />
                   ))}
@@ -458,11 +459,11 @@ export default function GameRoom() {
 
       {/* ── Completed State ── */}
       {game.status === 'completed' && (
-        <Card className="border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
+        <Card className="border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 animate-fade-in-up">
           <CardContent className="flex flex-col items-center py-8 gap-4">
-            <Trophy className="h-12 w-12 text-amber-500" />
-            <h2 className="text-2xl font-bold">Game Complete!</h2>
-            <p className="text-muted-foreground">All prizes have been awarded.</p>
+            <Trophy className="h-12 w-12 text-amber-500 animate-trophy-bounce" />
+            <h2 className="text-xl sm:text-2xl font-bold text-center">Game Complete!</h2>
+            <p className="text-muted-foreground text-center">All prizes have been awarded.</p>
             <Link to="/lobby">
               <Button className="mt-2">Back to Lobby</Button>
             </Link>
