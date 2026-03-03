@@ -79,8 +79,8 @@ export function AuthInitializer({ children }: { children: React.ReactNode }) {
     return (
       <div className="h-screen w-screen flex flex-col items-center justify-center bg-background">
         <Loader2 className="h-10 w-10 animate-spin text-violet-600 mb-4" />
-        <p className="text-muted-foreground animate-pulse">
-          Syncing profile data...
+        <p className="text-muted-foreground animate-pulse text-lg font-medium text-center px-4">
+          Finding the best game for you...
         </p>
       </div>
     );

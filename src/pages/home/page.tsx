@@ -8,7 +8,6 @@ import {
   Shield,
   Star,
   ArrowRight,
-  Play,
   Gift,
   Clock,
   Loader2,
