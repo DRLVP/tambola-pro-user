@@ -121,7 +121,7 @@ export default function PurchaseTicket() {
               {game.name}
             </CardTitle>
             <CardDescription className="text-center">
-              Hosted by {game.hostName} • ₹{game.ticketPrice} per ticket
+              Hosted by {game.hostName} • {game.ticketPrice} XP per ticket
             </CardDescription>
           </CardHeader>
 
@@ -299,7 +299,7 @@ export default function PurchaseTicket() {
               <div className="flex justify-between items-center pt-2 border-t">
                 <span className="font-semibold text-lg">Total</span>
                 <Badge variant="secondary" className="text-lg px-4 py-1.5 bg-violet-100 text-violet-700 hover:bg-violet-100">
-                  ₹{totalPrice}
+                  {totalPrice} XP
                 </Badge>
               </div>
             )}
@@ -320,7 +320,7 @@ export default function PurchaseTicket() {
                 <>
                   <Ticket className="h-5 w-5" />
                   {selectedNumbers.length > 0
-                    ? `Book ${selectedNumbers.length} Ticket${selectedNumbers.length > 1 ? 's' : ''} — ₹${totalPrice}`
+                    ? `Book ${selectedNumbers.length} Ticket${selectedNumbers.length > 1 ? 's' : ''} — ${totalPrice} XP`
                     : 'Select Tickets to Book'}
                 </>
               )}

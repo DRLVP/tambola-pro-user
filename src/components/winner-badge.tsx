@@ -118,7 +118,7 @@ function FullBadge({ winnerInfo, className }: { winnerInfo: TicketWinnerInfo; cl
       {/* Prize amount */}
       <div className="text-right shrink-0">
         <p className="text-lg font-bold text-green-600 dark:text-green-400">
-          ₹{winnerInfo.prizeAmount.toLocaleString()}
+          {winnerInfo.prizeAmount.toLocaleString()} XP
         </p>
       </div>
     </div>
@@ -179,7 +179,7 @@ function CardBadge({ winnerInfo, className }: { winnerInfo: TicketWinnerInfo; cl
           <div className="text-right shrink-0">
             <p className="text-xs text-muted-foreground">Prize Won</p>
             <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-              ₹{winnerInfo.prizeAmount.toLocaleString()}
+              {winnerInfo.prizeAmount.toLocaleString()} XP
             </p>
           </div>
         </div>

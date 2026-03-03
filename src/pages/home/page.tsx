@@ -105,105 +105,37 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
-        </div>
-
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-yellow-400/20 rounded-full blur-lg animate-bounce" />
-
-        <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-4 bg-white/20 text-white border-white/30 backdrop-blur-sm hover:bg-white/30">
-              🎉 100% Free to Play
-            </Badge>
-
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Experience the Thrill of
-              <span className="block bg-gradient-to-r from-yellow-300 via-amber-300 to-orange-300 bg-clip-text text-transparent">
-                Tambola Online
-              </span>
-            </h1>
-
-            <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Join thousands of players in the most exciting Housie game! Play with friends,
-              win amazing prizes, and create unforgettable memories.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/lobby">
-                <Button
-                  size="lg"
-                  className="gap-2 bg-white text-violet-700 hover:bg-white/90 shadow-xl shadow-black/20 text-lg px-8 py-6 cursor-pointer"
-                >
-                  <Play className="h-5 w-5" />
-                  Play Now
-                </Button>
-              </Link>
-              <Link to="/dashboard">
-                <Button
-                  size="lg"
-                  className="gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 shadow-lg text-lg px-8 py-6 cursor-pointer"
-                >
-                  <ArrowRight className="h-5 w-5" />
-                  My Dashboard
-                </Button>
-              </Link>
-            </div>
-
-            {/* Stats */}
-            <div className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto">
-              <div>
-                <div className="text-3xl md:text-4xl font-bold">10K+</div>
-                <div className="text-white/70 text-sm">Players</div>
-              </div>
-              <div>
-                <div className="text-3xl md:text-4xl font-bold">500+</div>
-                <div className="text-white/70 text-sm">Daily Games</div>
-              </div>
-              <div>
-                <div className="text-3xl md:text-4xl font-bold">50K+</div>
-                <div className="text-white/70 text-sm">Winners</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Wave Divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" className="fill-background" />
-          </svg>
-        </div>
-      </section>
-
-      {/* Available Games Section */}
-      <section className="py-16 md:py-20">
+      {/* Available Games Section (Moved to top, Hero removed) */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-violet-50/50 to-white dark:from-violet-950/20 dark:to-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <Badge variant="secondary" className="mb-4">🎮 Live Games</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Available Games</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Join an ongoing game or buy tickets for an upcoming one
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+              Tambola Online
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Join an ongoing game or check back later!
             </p>
           </div>
+
 
           {gamesLoading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader2 className="h-12 w-12 animate-spin text-violet-500 mb-4" />
+              <p className="text-lg text-muted-foreground font-medium animate-pulse">Checking for available games...</p>
             </div>
           ) : games.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Gamepad2 className="h-12 w-12 mx-auto mb-3 opacity-40" />
-              <p className="font-medium">No games available right now</p>
-              <p className="text-sm mt-1">Check back soon or join the lobby!</p>
+            <div className="max-w-xl mx-auto bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm border-2 border-dashed border-violet-200 dark:border-violet-900 rounded-3xl p-12 text-center animate-in fade-in zoom-in duration-500">
+              <div className="w-24 h-24 bg-violet-100 dark:bg-violet-900/40 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Clock className="h-12 w-12 text-violet-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-3">No Games available right now.</h3>
+              <p className="text-lg text-muted-foreground mb-8">
+                The host hasn't started any games yet. Please wait here, a new game will begin shortly!
+              </p>
+              <Button onClick={() => window.location.reload()} variant="outline" size="lg" className="gap-2">
+                <Zap className="h-4 w-4" />
+                Refresh Page
+              </Button>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">

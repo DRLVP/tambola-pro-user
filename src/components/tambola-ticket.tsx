@@ -42,8 +42,8 @@ export function TambolaTicket({ ticket, className, showOwner = false }: TambolaT
         ticket.status === 'won'
           ? 'border-emerald-400 dark:border-emerald-600 shadow-emerald-500/20'
           : 'border-violet-300 dark:border-violet-700 shadow-violet-500/10',
-        'bg-gradient-to-br from-white to-violet-50 dark:from-zinc-900 dark:to-violet-950',
-        'p-3 sm:p-4 w-full',
+        'bg-white dark:bg-zinc-900 dark:to-violet-950',
+        'p-3 sm:p-4 w-full text-zinc-900 dark:text-zinc-100',
         className
       )}
     >
@@ -101,12 +101,12 @@ export function TambolaTicket({ ticket, className, showOwner = false }: TambolaT
                   'aspect-square flex items-center justify-center rounded-md',
                   'text-[11px] sm:text-xs md:text-sm font-bold select-none transition-all duration-200',
                   isEmpty
-                    ? 'bg-muted/30 dark:bg-zinc-800/40'
+                    ? 'bg-muted/30 dark:bg-zinc-800/40 text-transparent'
                     : isMarked
                       ? // Daubed / marked number
                       'bg-violet-500 text-white shadow-md shadow-violet-400/40 ring-2 ring-violet-300 dark:ring-violet-600 scale-105 animate-bounce-in'
                       : // Normal number cell
-                      'bg-white dark:bg-zinc-800 text-foreground border border-violet-200 dark:border-violet-800 shadow-sm'
+                      'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-violet-300 dark:border-violet-700 shadow-sm'
                 )}
               >
                 {isEmpty ? '' : num}

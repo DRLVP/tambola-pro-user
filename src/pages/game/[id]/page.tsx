@@ -53,14 +53,37 @@ function speak(text: string) {
   const utterance = new SpeechSynthesisUtterance(text);
   const voice = getIndianFemaleVoice();
   if (voice) utterance.voice = voice;
+
+  // Use a very natural human conversational voice tuning
   utterance.lang = 'en-IN';
-  utterance.rate = 0.9;
-  utterance.pitch = 1.05;
+  utterance.rate = 0.85; // Slightly slower
+  utterance.pitch = 1.1; // Slightly higher & energetic
+
   // Duck music during speech
   if (isMusicPlaying()) {
-    duckForAnnouncement(Math.max(2000, text.length * 120));
+    duckForAnnouncement(Math.max(2500, text.length * 150));
   }
   window.speechSynthesis.speak(utterance);
+}
+
+// Format the bingo string
+function formatTambolaNumber(num: number): string {
+  if (num < 10) return `Single Number... ${num}`;
+
+  const numStr = num.toString();
+  const firstDigit = numStr[0];
+  const secondDigit = numStr[1];
+
+  if (num % 10 === 0) {
+    return `${firstDigit} and Zero... ${num}!`;
+  }
+
+  // Typical tens like 11, 22
+  if (firstDigit === secondDigit) {
+    return `Two times ${firstDigit}... ${num}!`;
+  }
+
+  return `${firstDigit} and ${secondDigit}... ${num}!`;
 }
 
 // Status badge colors
@@ -184,7 +207,7 @@ export default function GameRoom() {
 
       // Voice announcement
       if (voiceEnabledRef.current) {
-        speak(`Number ${num}`);
+        speak(formatTambolaNumber(num));
       }
     };
 
@@ -399,7 +422,7 @@ export default function GameRoom() {
               </div>
               <div className="flex justify-between py-2 border-b">
                 <span className="text-sm text-muted-foreground">Ticket Price</span>
-                <span className="text-sm font-medium">₹{game.ticketPrice}</span>
+                <span className="text-sm font-medium">{game.ticketPrice} XP</span>
               </div>
               <div className="flex justify-between py-2 border-b">
                 <span className="text-sm text-muted-foreground">Numbers Called</span>
@@ -444,7 +467,7 @@ export default function GameRoom() {
                       )}
                     </div>
                   </div>
-                  <span className="font-bold text-green-600">₹{rule.prizeAmount}</span>
+                  <span className="font-bold text-green-600">{rule.prizeAmount} XP</span>
                 </div>
               ))}
             </CardContent>

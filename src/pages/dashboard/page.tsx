@@ -135,7 +135,7 @@ export function UserDashboard() {
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full blur-3xl" />
         </div>
         <CardContent className="py-8 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">
                 Welcome back{profile?.name ? `, ${profile.name.split(' ')[0]}` : ''}! 👋
@@ -171,7 +171,7 @@ export function UserDashboard() {
         />
         <StatsCard
           title="Total Winnings"
-          value={`₹${(profile?.totalWinnings || 0).toLocaleString()}`}
+          value={`${(profile?.totalWinnings || 0).toLocaleString()} XP`}
           icon={TrendingUp}
           iconClassName="bg-gradient-to-br from-green-500 to-emerald-500"
         />
@@ -213,7 +213,7 @@ export function UserDashboard() {
               {recentTickets.map((ticket) => (
                 <div
                   key={ticket._id}
-                  className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center flex-shrink-0">
@@ -242,7 +242,7 @@ export function UserDashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <TicketStatusBadge status={ticket.status} />
                     {ticket.winnerInfo?.prizeAmount ? (
                       <p className="text-sm font-semibold text-emerald-600 mt-1">

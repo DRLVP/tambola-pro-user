@@ -1,9 +1,10 @@
 ﻿import { Link, useLocation } from 'react-router';
 import { useState } from 'react';
-import { Menu, X, Gamepad, Sun, Moon, Home, Users, Trophy } from 'lucide-react';
+import { Menu, X, Gamepad, Sun, Moon, Home, Users, Trophy, Music, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import { startMusic, stopMusic, isMusicPlaying } from '@/lib/tambola-bg-music';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
@@ -15,10 +16,22 @@ export function Header() {
   const location = useLocation();
   const [isDark, setIsDark] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  // Track local React state from the global audio module state
+  const [musicStarted, setMusicStarted] = useState(() => isMusicPlaying());
 
   const toggleTheme = () => {
     setIsDark(!isDark);
     document.documentElement.classList.toggle('dark');
+  };
+
+  const toggleMusic = () => {
+    if (isMusicPlaying()) {
+      stopMusic();
+      setMusicStarted(false);
+    } else {
+      startMusic();
+      setMusicStarted(true);
+    }
   };
 
   return (
@@ -59,6 +72,17 @@ export function Header() {
 
         {/* Right Side Actions */}
         <div className="flex items-center gap-2">
+          {/* Music Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleMusic}
+            className={cn("rounded-full", musicStarted && "text-violet-500")}
+            title={musicStarted ? "Mute Background Music" : "Play Background Music"}
+          >
+            {musicStarted ? <Music className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+          </Button>
+
           {/* Theme Toggle */}
           <Button
             variant="ghost"
