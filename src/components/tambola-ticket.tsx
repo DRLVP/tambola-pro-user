@@ -40,10 +40,10 @@ export function TambolaTicket({ ticket, className, showOwner = false }: TambolaT
       className={cn(
         'rounded-2xl border-2 shadow-lg',
         ticket.status === 'won'
-          ? 'border-emerald-400 dark:border-emerald-600 shadow-emerald-500/20'
-          : 'border-violet-300 dark:border-violet-700 shadow-violet-500/10',
-        'bg-white dark:bg-zinc-900 dark:to-violet-950',
-        'p-3 sm:p-4 w-full text-zinc-900 dark:text-zinc-100',
+          ? 'border-emerald-500 shadow-emerald-500/20'
+          : 'border-zinc-700 shadow-black/20',
+        'bg-zinc-900', // Always dark background for the ticket to match the theme best
+        'p-3 sm:p-4 w-full text-zinc-100',
         className
       )}
     >
@@ -101,12 +101,12 @@ export function TambolaTicket({ ticket, className, showOwner = false }: TambolaT
                   'aspect-square flex items-center justify-center rounded-md',
                   'text-[11px] sm:text-xs md:text-sm font-bold select-none transition-all duration-200',
                   isEmpty
-                    ? 'bg-muted/30 dark:bg-zinc-800/40 text-transparent'
+                    ? 'bg-zinc-800/40 text-transparent'
                     : isMarked
                       ? // Daubed / marked number
-                      'bg-violet-500 text-white shadow-md shadow-violet-400/40 ring-2 ring-violet-300 dark:ring-violet-600 scale-105 animate-bounce-in'
+                      'bg-red-500 text-white shadow-md shadow-red-500/40 ring-2 ring-red-400 scale-105 animate-bounce-in'
                       : // Normal number cell
-                      'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-violet-300 dark:border-violet-700 shadow-sm'
+                      'bg-zinc-800 text-white border border-zinc-700 shadow-sm'
                 )}
               >
                 {isEmpty ? '' : num}
@@ -117,17 +117,17 @@ export function TambolaTicket({ ticket, className, showOwner = false }: TambolaT
       </div>
 
       {/* Bottom strip */}
-      <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+      <div className="mt-3 flex items-center gap-3 text-xs text-zinc-400">
         <span className="flex items-center gap-1">
-          <span className="inline-block w-3 h-3 rounded-full bg-violet-500" />
+          <span className="inline-block w-3 h-3 rounded-full bg-red-500" />
           Marked
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block w-3 h-3 rounded-sm bg-white dark:bg-zinc-800 border border-violet-200 dark:border-violet-800" />
+          <span className="inline-block w-3 h-3 rounded-sm bg-zinc-800 border border-zinc-700" />
           Number
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block w-3 h-3 rounded-sm bg-muted/30 dark:bg-zinc-800/40" />
+          <span className="inline-block w-3 h-3 rounded-sm bg-zinc-800/40" />
           Empty
         </span>
       </div>
