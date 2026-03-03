@@ -217,10 +217,10 @@ export default function PurchaseTicket() {
                               className={cn(
                                 'aspect-square flex items-center justify-center rounded-md text-[10px] sm:text-xs font-bold select-none',
                                 isEmpty
-                                  ? 'bg-gray-50 dark:bg-zinc-800/40'
+                                  ? 'bg-muted/30 dark:bg-zinc-800/40 text-transparent'
                                   : isSelected
-                                    ? 'bg-violet-100 dark:bg-violet-900/50 text-violet-800 dark:text-violet-200 border border-violet-200 dark:border-violet-700'
-                                    : 'bg-gray-100 dark:bg-zinc-800 text-foreground border border-gray-200 dark:border-zinc-700'
+                                    ? 'bg-red-500 text-white shadow-md shadow-red-500/40 ring-2 ring-red-400 scale-105 animate-bounce-in'
+                                    : 'bg-zinc-100 text-zinc-900 border border-zinc-300 shadow-sm dark:bg-zinc-800 dark:text-white dark:border-zinc-700'
                               )}
                             >
                               {isEmpty ? '' : num}
@@ -264,11 +264,11 @@ export default function PurchaseTicket() {
                 Available
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="h-4 w-4 rounded border-2 border-violet-500 bg-violet-50" />
+                <div className="h-4 w-4 rounded border-2 border-red-500 bg-red-500 shadow-sm" />
                 Selected
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="h-4 w-4 rounded border-2 border-dashed border-red-200 bg-red-50 opacity-60" />
+                <div className="h-4 w-4 rounded border-2 border-dashed border-red-200 bg-red-50 opacity-60 dark:border-red-900/50 dark:bg-red-950/20" />
                 Booked
               </div>
             </div>
@@ -284,7 +284,7 @@ export default function PurchaseTicket() {
                   {selectedNumbers.map(num => (
                     <Badge
                       key={num}
-                      className="bg-violet-600 text-white hover:bg-violet-700 cursor-pointer px-3 py-1 gap-1"
+                      className="bg-red-500 text-white hover:bg-red-600 cursor-pointer px-3 py-1 gap-1 shadow-sm"
                       onClick={(e) => { e.stopPropagation(); toggleTicket(num); }}
                     >
                       #{num} <X className="h-3 w-3" />
